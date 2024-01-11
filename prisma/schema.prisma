@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  username     String
+  password     String
+  email        String
+  Review       Review[]
+  ShoppingCart ShoppingCart?
+  Order        Order[]
+}
+
+model Product {
+  id               Int                @id @default(autoincrement())
+  name             String
+  price            Float
+  image            String
+  description      String
+  reviews          Review[]
+  ShoppingCartItem ShoppingCartItem[]
+  OrderItem        OrderItem[]
+}
+
+model Review {
+  id        Int     @id @default(autoincrement())
+  text      String
+  rating    Int
+  productId Int
+  userId    Int
+  user      User?   @relation(fields: [userId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model ShoppingCart {
+  id     Int                @id @default(autoincrement())
+  user   User               @relation(fields: [userId], references: [id])
+  userId Int                @unique
+  items  ShoppingCartItem[]
+}
+
+model ShoppingCartItem {
+  id             Int           @id @default(autoincrement())
+  product        Product       @relation(fields: [productId], references: [id])
+  productId      Int
+  quantity       Int
+  ShoppingCart   ShoppingCart? @relation(fields: [shoppingCartId], references: [id])
+  shoppingCartId Int?
+
+  @@index([productId], name: "productId")
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  user      User        @relation(fields: [userId], references: [id])
+  userId    Int
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int
+}
+
+enum UserRole {
+  USER
+  ADMINISTRATOR
+}
