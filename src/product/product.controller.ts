@@ -3,7 +3,8 @@ import { ProductService } from './product.service';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) {
+  }
 
   @Get()
   getProducts(
@@ -15,8 +16,8 @@ export class ProductController {
     return this.productService.products({
       where: {
         price: {
-          gte: +minPrice || 0,
-          lte: +maxPrice || Number.MAX_SAFE_INTEGER,
+          gte: minPrice || 0,
+          lte: maxPrice || Number.MAX_SAFE_INTEGER,
         },
       },
       orderBy: {
@@ -26,7 +27,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.product({id: +id});
+  findOne(@Param('id') id: number) {
+    return this.productService.product({id});
   }
 }

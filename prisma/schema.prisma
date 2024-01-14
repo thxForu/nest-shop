@@ -49,12 +49,12 @@ model ShoppingCart {
 }
 
 model ShoppingCartItem {
-  id             Int           @id @default(autoincrement())
-  product        Product       @relation(fields: [productId], references: [id])
+  id             Int          @id @default(autoincrement())
+  product        Product      @relation(fields: [productId], references: [id])
   productId      Int
   quantity       Int
-  ShoppingCart   ShoppingCart? @relation(fields: [shoppingCartId], references: [id])
-  shoppingCartId Int?
+  ShoppingCart   ShoppingCart @relation(fields: [shoppingCartId], references: [id])
+  shoppingCartId Int
 
   @@index([productId], name: "productId")
 }
@@ -69,11 +69,11 @@ model Order {
 
 model OrderItem {
   id        Int     @id @default(autoincrement())
-  order     Order   @relation(fields: [orderId], references: [id])
-  orderId   Int
   product   Product @relation(fields: [productId], references: [id])
   productId Int
   quantity  Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
 }
 
 enum UserRole {
